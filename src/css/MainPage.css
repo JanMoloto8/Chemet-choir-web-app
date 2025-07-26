@@ -1,0 +1,13 @@
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #2C1810 0%, #3E2723 50%, #1C1C1C 100%);
+            min-height: 100vh;
+            color: white;
+            overflow-x: hidden;
+        }

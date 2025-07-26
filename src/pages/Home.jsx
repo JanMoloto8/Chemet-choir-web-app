@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import './css/Home.css'
+import '../css/Home.css'
+import logo from '../assets/logo.png';
 import Login from '../components/login';
 import SignUp from '../components/SignUp';
 
@@ -24,7 +25,7 @@ function Home(){
                 <source src="/mine.mp4" type="video/mp4" />
             </video>
             <nav>
-                <img src="logo.png" alt="logo" className="logo" />
+                <img src={logo} className="logo" />
                 <ul>
                     <li><a href="">HOME</a></li>
                     <li><a href="">VIDEOS</a></li>
