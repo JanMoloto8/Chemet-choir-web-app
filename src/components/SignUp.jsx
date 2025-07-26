@@ -1,44 +1,228 @@
-import "../css/Login.css";
-import { FaEnvelope, FaLock } from "react-icons/fa";
+// SignUp.jsx
+import "../css/signUp.css";
+import { FaEnvelope, FaLock, FaUser, FaPhone } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
+import { auth } from "../firebase";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { useState } from "react";
 
-function Login({ showLogin, setShowLogin }) {
-  if (!showLogin) return null;
+function SignUp({ showSignUp, setShowSignUp }) {
+  const [formData, setFormData] = useState({
+    fullName: "",
+    email: "",
+    phone: "",
+    password: "",
+    confirmPassword: ""
+  });
+  const [isLoading, setIsLoading] = useState(false);
+  const [errors, setErrors] = useState({});
+  const [showLogin, setShowLogin] = useState(false);
 
+  if (!showSignUp) return null;
+
+  const handleInputChange = (field, value) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: value
+    }));
+    
+    // Clear error when user starts typing
+    if (errors[field]) {
+      setErrors(prev => ({
+        ...prev,
+        [field]: ""
+      }));
+    }
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+    
+    if (!formData.fullName.trim()) {
+      newErrors.fullName = "Full name is required";
+    }
+    
+    if (!formData.email.trim()) {
+      newErrors.email = "Email is required";
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = "Please enter a valid email";
+    }
+    
+    if (!formData.password) {
+      newErrors.password = "Password is required";
+    } else if (formData.password.length < 6) {
+      newErrors.password = "Password must be at least 6 characters";
+    }
+    
+    if (!formData.confirmPassword) {
+      newErrors.confirmPassword = "Please confirm your password";
+    } else if (formData.password !== formData.confirmPassword) {
+      newErrors.confirmPassword = "Passwords don't match";
+    }
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSignUp = async (e) => {
+    e.preventDefault();
+    
+    if (!validateForm()) return;
+    
+    setIsLoading(true);
+    
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth,formData.email,  formData.password);
+      // Update user profile with display name
+      await updateProfile(userCredential.user, {
+        displayName: formData.fullName
+      });
+      
+      alert("Account created successfully!");
+      setShowSignUp(false);
+      setFormData({
+        fullName: "",
+        email: "",
+        phone: "",
+        password: "",
+        confirmPassword: ""
+      });
+      console.log("User signed up successfully");
+      
+    } catch (error) {
+      console.error("Error signing up:", error.code, error.message);
+      
+      // Handle specific Firebase errors
+      if (error.code === 'auth/email-already-in-use') {
+        setErrors({ email: "This email is already registered" });
+      } else if (error.code === 'auth/weak-password') {
+        setErrors({ password: "Password is too weak" });
+      } else {
+        alert('Sign up failed. Please try again.');
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  const handleSwitchToLogin = () => {
+    setShowSignUp(false);
+    setShowLogin(true);
+    
+  };
   return (
-    <div className="modal-overlay">
-      <div className="modal">
-        <div className="modal-header">
-          <h2>Login</h2>
-          <IoMdClose className="close-icon" onClick={() => setShowLogin(false)} />
+    <>
+      <div className="modal-overlay">
+        <div className="modal signup-modal">
+          <IoMdClose 
+            className="close-icon" 
+            onClick={() => setShowSignUp(false)} 
+          />
+
+          <div className="modal-header">
+            <h2>Create Account</h2>
+            <p className="welcome-text">Join Chemet-Smes today</p>
+          </div>
+
+          <form onSubmit={handleSignUp}>
+            <label>Full Name</label>
+            <div className={`input-icon ${errors.fullName ? 'error' : ''}`}>
+              <FaUser />
+              <input 
+                type="text" 
+                placeholder="Enter your full name"
+                value={formData.fullName}
+                onChange={(e) => handleInputChange('fullName', e.target.value)}
+                className={errors.fullName ? 'error' : ''}
+              />
+            </div>
+            {errors.fullName && <span className="error-message">{errors.fullName}</span>}
+
+            <label>Email Address</label>
+            <div className={`input-icon ${errors.email ? 'error' : ''}`}>
+              <FaEnvelope />
+              <input 
+                type="email" 
+                placeholder="Enter your email"
+                value={formData.email}
+                onChange={(e) => handleInputChange('email', e.target.value)}
+                className={errors.email ? 'error' : ''}
+              />
+            </div>
+            {errors.email && <span className="error-message">{errors.email}</span>}
+
+            <label>Phone Number <span className="optional">(Optional)</span></label>
+            <div className="input-icon">
+              <FaPhone />
+              <input 
+                type="tel" 
+                placeholder="Enter your phone number"
+                value={formData.phone}
+                onChange={(e) => handleInputChange('phone', e.target.value)}
+              />
+            </div>
+
+            <label>Password</label>
+            <div className={`input-icon ${errors.password ? 'error' : ''}`}>
+              <FaLock />
+              <input 
+                type="password" 
+                placeholder="Create a password"
+                value={formData.password}
+                onChange={(e) => handleInputChange('password', e.target.value)}
+                className={errors.password ? 'error' : ''}
+              />
+            </div>
+            {errors.password && <span className="error-message">{errors.password}</span>}
+
+            <label>Confirm Password</label>
+            <div className={`input-icon ${errors.confirmPassword ? 'error' : ''}`}>
+              <FaLock />
+              <input 
+                type="password" 
+                placeholder="Confirm your password"
+                value={formData.confirmPassword}
+                onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
+                className={errors.confirmPassword ? 'error' : ''}
+              />
+            </div>
+            {errors.confirmPassword && <span className="error-message">{errors.confirmPassword}</span>}
+
+  
+
+            <button 
+              type="submit" 
+              className="signup-btn"
+              disabled={isLoading}
+            >
+              {isLoading ? "Creating Account..." : "Create Account"}
+            </button>
+          </form>
+
+          <div className="divider">
+            <span>or</span>
+          </div>
+
+          <p className="signin-text">
+            Already have an account? <a href="#" onClick={handleSwitchToLogin}>Sign in</a>
+          </p>
         </div>
-        <p className="welcome-text">Welcome back.</p>
-
-        <label>Email Address</label>
-        <div className="input-icon">
-          <FaEnvelope />
-          <input type="email" placeholder="Enter your email" />
-        </div>
-
-        <label>Password</label>
-        <div className="input-icon">
-          <FaLock />
-          <input type="password" placeholder="Enter your password" />
-        </div>
-
-        <div className="options">
-          <label><input type="checkbox" /> Remember me</label>
-          <a href="#">Forgot password?</a>
-        </div>
-
-        <button className="signin-btn">Sign In</button>
-
-        <p className="signup-text">
-          Don’t have an account? <a href="#">Sign up</a>
-        </p>
       </div>
-    </div>
+
+      {showLogin && (
+        <Login 
+            setShowLogin={setShowlogin} 
+            showLogin={showLogin} 
+            myEmail={myEmail} 
+            myPassword={myPassword} 
+            setMyEmail={setMyEmail} 
+            setMyPassword={setMyPassword} 
+        />
+        )}
+    </>
+
+
+    
   );
 }
 
-export default Login;
+export default SignUp;
