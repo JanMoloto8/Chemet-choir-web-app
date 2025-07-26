@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import '../css/Home.css'
 import logo from '../assets/logo.png';
-import Login from '../components/login';
+import Login from '../components/Login';
 import SignUp from '../components/SignUp';
 
 function Home(){
