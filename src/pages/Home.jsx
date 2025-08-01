@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { use, useState } from 'react';
 import '../css/Home.css'
 import logo from '../assets/logo.png';
 import Login from '../components/Login';
 import SignUp from '../components/SignUp';
+
 
 function Home(){
     const [showLogin, setShowlogin] = useState(false);
@@ -10,6 +11,7 @@ function Home(){
     const [myEmail, setMyEmail] = useState("");
     const [myPassword, setMyPassword] = useState("");
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  
 
     const toggleMobileMenu = () => {
         setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -18,11 +20,11 @@ function Home(){
     const closeMobileMenu = () => {
         setIsMobileMenuOpen(false);
     };
-
+  
     return(
         <section className="hero">
             <video autoPlay loop muted playsInline className="back-video">
-                <source src="/mine.mp4" type="video/mp4" />
+                <source src="/videos/mine.mp4" type="video/mp4" />
             </video>
             <nav>
                 <img src={logo} className="logo" />

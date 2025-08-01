@@ -3,13 +3,16 @@ import { FaEnvelope, FaLock } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 import {auth} from "../firebase"; // Import the auth object from firebase.js
 import { signInWithEmailAndPassword } from "firebase/auth";
-
+import { useNavigate } from 'react-router-dom';
 
 
 function Login({ showLogin, setShowLogin,myEmail, myPassword, setMyEmail, setMyPassword }) {
   if (!showLogin) return null;
 
-
+  const navigate =useNavigate();
+  const handleloginClick = ()=>{
+    navigate('/Main');
+  }
   const handleLogin = async (e) => {
  
         e.preventDefault();
@@ -20,6 +23,7 @@ function Login({ showLogin, setShowLogin,myEmail, myPassword, setMyEmail, setMyP
             setMyEmail("");
             setMyPassword("");
             console.log("User signed in successfully");
+            handleloginClick();
         } catch (error) {
           console.error("Error signing in:", error.code, error.message);
           alert('Login failed');

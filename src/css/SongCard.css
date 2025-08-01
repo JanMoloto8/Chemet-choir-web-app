@@ -1,0 +1,239 @@
+/* SongCard.css */
+
+.song-card {
+  background: #000000;
+  border-radius: 12px;
+  padding: 20px;
+  margin: 30px 160px;
+  box-shadow: 0 4px 12px rgba(231, 227, 223, 0.15);
+  border: 1px solid #d2b48c;
+  transition: all 0.3s ease;
+  position: relative;
+  animation: fadeIn 4s ease;
+  overflow: hidden;
+}
+
+.song-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(139, 69, 19, 0.25);
+  border-color: #a0522d;
+}
+
+.song-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.song-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #8b4513;
+  margin: 0;
+  line-height: 1.4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.song-writer {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #a0522d;
+  font-size: 0.9rem;
+  margin: 0;
+  font-weight: 500;
+}
+
+.icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.user-icon {
+  color: #d2691e;
+}
+
+.calendar-icon {
+  color: #a0522d;
+}
+
+.play-icon {
+  color: #ffffff;
+}
+
+.download-icon {
+  color: #8b4513;
+}
+
+.song-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 0;
+  border-top: 1px solid #f5deb3;
+  border-bottom: 1px solid #f5deb3;
+}
+
+.meta-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+  color: #8b4513;
+}
+
+.meta-row span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 500;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 4px 0;
+}
+
+.tag {
+  background: linear-gradient(135deg, #413024 0%, #8b4513 100%);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 16px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.song-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.play-btn {
+  flex: 1;
+  background: linear-gradient(135deg, #351a08 0%, #865735 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.play-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(210, 105, 30, 0.4);
+}
+
+.play-btn:active {
+  transform: translateY(0);
+}
+
+.download-btn {
+  background: #27211b;
+  color: #ffc8a1;
+  border: 1px solid #1d1307;
+  border-radius: 8px;
+  padding: 10px 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  min-width: 44px;
+}
+
+.download-btn:hover {
+  background: #f5deb3;
+  border-color: #a0522d;
+  color: #8b4513;
+  transform: translateY(-1px);
+}
+
+.download-btn:active {
+  transform: translateY(0);
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 480px) {
+  .song-card {
+    max-width: 100%;
+    padding: 16px;
+    margin: 10px 20px;
+  }
+  
+  .song-title {
+    font-size: 1.1rem;
+  }
+  
+  .song-writer {
+    font-size: 0.85rem;
+  }
+  
+  .meta-row {
+    font-size: 0.8rem;
+  }
+  
+  .play-btn {
+    padding: 8px 12px;
+    font-size: 0.85rem;
+  }
+  
+  .download-btn {
+    padding: 8px 10px;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .song-card {
+    background: rgba(0, 0, 0, 0.3);
+    border-color: #374151;
+    color: #f9fafb;
+  }
+  
+  .song-card:hover {
+    border-color: #4b5563;
+  }
+  
+  .song-title {
+    color: #f9fafb;
+  }
+  
+  .song-writer {
+    color: #d1d5db;
+  }
+  
+  .song-meta {
+    border-color: #374151;
+  }
+  
+  .meta-row {
+    color: #e5e7eb;
+  }
+  
+  .download-btn {
+    background:rgba(0, 0, 0, 0.3);
+    color: #d1d5db;
+    border-color: #4b5563;
+  }
+  
+  .download-btn:hover {
+    background: #221b09;
+    border-color: #6b7280;
+    color: #f3f4f6;
+  }
+}
