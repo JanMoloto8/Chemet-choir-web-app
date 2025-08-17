@@ -1,0 +1,20 @@
+{
+  "name": "chemet-choir-web-app",
+  "version": "1.0.0",
+  "description": "The Chemet Choir App is a comprehensive management and engagement platform designed specifically for choir groups. It aims to streamline administrative tasks, encourage participation, and create a fun, data-driven community for all choir members and executives.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JanMoloto8/Chemet-choir-web-app.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JanMoloto8/Chemet-choir-web-app/issues"
+  },
+  "homepage": "https://github.com/JanMoloto8/Chemet-choir-web-app#readme"
+}
