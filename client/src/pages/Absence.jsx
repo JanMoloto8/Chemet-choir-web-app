@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState,useContext  } from 'react';
 import '../css/Absence.css';
 import Nav from '../components/Nav';
+import { AuthContext } from "../context/AuthContext";
 
 export default function Absence() {
+    const { user, token, logout } = useContext(AuthContext);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [formData, setFormData] = useState({
         title: '',
@@ -17,24 +19,6 @@ export default function Absence() {
             date: "Dec 15, 2023",
             event: "Christmas Rehearsal",
             status: "approved",
-            reason: "Had to attend a family gathering.",
-            proof: "hospital.pdf"
-        },
-        {
-            id: 2,
-            title: "Work Conference",
-            date: "Dec 15, 2023",
-            event: "Christmas Rehearsal",
-            status: "pending",
-            reason: "Had to attend a family gathering.",
-            proof: "hospital.pdf"
-        },
-        {
-            id: 3,
-            title: "Lab Session",
-            date: "Dec 15, 2023",
-            event: "Christmas Rehearsal",
-            status: "rejected",
             reason: "Had to attend a family gathering.",
             proof: "hospital.pdf"
         }
@@ -59,31 +43,52 @@ export default function Absence() {
     const handleFileUploadClick = () => {
         document.getElementById('fileInput').click();
     };
+    const handleSubmit = async (e) => {
+    e.preventDefault();
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        
-        // Create new absence entry
-        const newAbsence = {
-            id: absences.length + 1,
-            title: formData.title,
-            date: new Date().toLocaleDateString('en-US', { 
-                year: 'numeric', 
-                month: 'short', 
-                day: 'numeric' 
-            }),
-            event: formData.event,
-            status: "pending",
-            reason: formData.reason,
-            proof: formData.file ? formData.file.name : null
-        };
+    const newAbsence = {
+        uid: user.uid, // Replace this with the actual user's UID (from context, auth, etc.)
+        title: formData.title,
+        date: new Date().toLocaleDateString('en-US', { 
+            year: 'numeric', 
+            month: 'short', 
+            day: 'numeric' 
+        }),
+        event: formData.event,
+        status: "pending",
+        reason: formData.reason,
+        proof: formData.file ? formData.file.name : null
+    };
 
+    try {
+        const response = await fetch('http://localhost:5000/api/absences/submit', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(newAbsence)
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.error('Submission failed:', errorData);
+            return;
+        }
+
+        const result = await response.json();
+        console.log('Absence submitted:', result);
+
+        // Optional: Update UI
         setAbsences(prev => [newAbsence, ...prev]);
-        
+
         // Reset form and close modal
         setFormData({ title: '', event: '', reason: '', file: null });
         setIsModalOpen(false);
-    };
+
+    } catch (err) {
+        console.error('Error submitting absence:', err);
+    }
+};
 
     const handleCancel = () => {
         setFormData({ title: '', event: '', reason: '', file: null });
@@ -98,6 +103,35 @@ export default function Absence() {
             default: return 'status-pending';
         }
     };
+    useEffect(() => {
+
+        const fetchAbsences = async () => {
+            try {
+                const response = await fetch(`http://localhost:5000/api/absences/mine?uid=${user.uid}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    console.error('Failed to fetch absences:', errorData);
+                    return;
+                }
+
+                const data = await response.json();
+                setAbsences(data.absences); // Backend must return: { absences: [...] }
+            } catch (err) {
+                console.error('Error fetching absences:', err);
+            }
+        };
+
+        if (user?.uid) {
+            fetchAbsences();
+        }
+    },);
+
 
     return (
         <>
@@ -166,16 +200,86 @@ export default function Absence() {
                                 <label htmlFor="absenceTitle" className="form-label1">
                                     Absence Title <span className="required">*</span>
                                 </label>
-                                <input 
-                                    type="text"
-                                    id="absenceTitle"
+                                <select 
+                                    id="absenceTitle" 
                                     name="title"
                                     className="form-input1"
                                     placeholder="e.g Medical Appointment, Family Emergency"
                                     value={formData.title}
                                     onChange={handleInputChange}
                                     required
-                                />
+                                >
+                                    <option value="">Select Title</option>
+                                    
+                                    {/* Health-related */}
+                                    <option value="Illness/feeling unwell">Illness/feeling unwell</option>
+                                    <option value="Medical appointment">Medical appointment</option>
+                                    <option value="Doctor's visit">Doctor's visit</option>
+                                    <option value="Emergency room visit">Emergency room visit</option>
+                                    <option value="Mental health day">Mental health day</option>
+                                    <option value="Surgery">Surgery</option>
+                                    <option value="Recovery/rest">Recovery/rest</option>
+                                    
+                                    {/* Work/School */}
+                                    <option value="Work commitment">Work commitment</option>
+                                    <option value="Mandatory overtime">Mandatory overtime</option>
+                                    <option value="School exam">School exam</option>
+                                    <option value="Class conflict">Class conflict</option>
+                                    <option value="Business trip">Business trip</option>
+                                    <option value="Conference">Conference</option>
+                                    <option value="Training session">Training session</option>
+                                    <option value="Job interview">Job interview</option>
+                                    
+                                    {/* Family */}
+                                    <option value="Family emergency">Family emergency</option>
+                                    <option value="Childcare issues">Childcare issues</option>
+                                    <option value="Family obligation">Family obligation</option>
+                                    <option value="Caring for sick family member">Caring for sick family member</option>
+                                    <option value="Family event">Family event</option>
+                                    <option value="Babysitting">Babysitting</option>
+                                    <option value="Parent-teacher conference">Parent-teacher conference</option>
+                                    
+                                    {/* Personal */}
+                                    <option value="Prior commitment">Prior commitment</option>
+                                    <option value="Transportation issues">Transportation issues</option>
+                                    <option value="Car trouble">Car trouble</option>
+                                    <option value="Personal emergency">Personal emergency</option>
+                                    <option value="Double-booked">Double-booked</option>
+                                    <option value="Moving/relocation">Moving/relocation</option>
+                                    <option value="Home repairs">Home repairs</option>
+                                    
+                                    {/* Travel */}
+                                    <option value="Out of town">Out of town</option>
+                                    <option value="Vacation">Vacation</option>
+                                    <option value="Travel delays">Travel delays</option>
+                                    <option value="Flight cancellation">Flight cancellation</option>
+                                    <option value="Holiday travel">Holiday travel</option>
+                                    
+                                    {/* Social/Religious/Legal */}
+                                    <option value="Religious observance">Religious observance</option>
+                                    <option value="Wedding">Wedding</option>
+                                    <option value="Funeral">Funeral</option>
+                                    <option value="Court appearance">Court appearance</option>
+                                    <option value="Legal appointment">Legal appointment</option>
+                                    <option value="Volunteer commitment">Volunteer commitment</option>
+                                    <option value="Community service">Community service</option>
+                                    
+                                    {/* Unexpected/Weather */}
+                                    <option value="Weather-related">Weather-related</option>
+                                    <option value="Power outage">Power outage</option>
+                                    <option value="Home emergency">Home emergency</option>
+                                    <option value="Pet emergency">Pet emergency</option>
+                                    <option value="Last-minute conflict">Last-minute conflict</option>
+                                    <option value="Technical difficulties">Technical difficulties</option>
+                                    
+                                    {/* Other */}
+                                    <option value="Financial appointment">Financial appointment</option>
+                                    <option value="Therapy appointment">Therapy appointment</option>
+                                    <option value="Dental appointment">Dental appointment</option>
+                                    <option value="Vehicle maintenance">Vehicle maintenance</option>
+                                    <option value="Housing appointment">Housing appointment</option>
+                                    <option value="Other">Other</option>
+                                </select>
                             </div>
 
                             <div className="form-group1">

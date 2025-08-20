@@ -1,10 +1,14 @@
 import Nav from '../components/Nav';
 import { Search, Grid, List, Play, Download, Music, Calendar, User, Tag, TrendingUp, Filter } from 'lucide-react';
 import '../css/Rep.css'
-import { useState } from 'react';
+import { useState,useContext } from 'react';
 import SongCard from '../components/SongCard';
+import { AuthContext } from "../context/AuthContext";
+
 
 export default function Rep(){
+    const { user, token, logout } = useContext(AuthContext);
+    console.log(user);
     const [numSongs,setNumSongs] =useState(0);
     const [searchTerm,setSearchTerm] = useState("");
     const numCategories = 3;

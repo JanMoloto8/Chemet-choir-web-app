@@ -1,14 +1,16 @@
 import "../css/Login.css";
 import { FaEnvelope, FaLock } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
-import {auth} from "../firebase"; // Import the auth object from firebase.js
-import { signInWithEmailAndPassword } from "firebase/auth";
+import React, { useContext } from "react";
 import { useNavigate } from 'react-router-dom';
+
+import { AuthContext } from "../context/AuthContext";
+
 
 
 function Login({ showLogin, setShowLogin,myEmail, myPassword, setMyEmail, setMyPassword }) {
   if (!showLogin) return null;
-
+  const { login } = useContext(AuthContext);
   const navigate =useNavigate();
   const handleloginClick = ()=>{
     navigate('/Main');
@@ -16,20 +18,32 @@ function Login({ showLogin, setShowLogin,myEmail, myPassword, setMyEmail, setMyP
   const handleLogin = async (e) => {
  
         e.preventDefault();
-        try {
-            await signInWithEmailAndPassword(auth, myEmail, myPassword);
-            alert("Login successful!");
-            setShowLogin(false); // Close the login modal on successful login
-            setMyEmail("");
-            setMyPassword("");
-            console.log("User signed in successfully");
-            handleloginClick();
-        } catch (error) {
+  try {
+    const response = await fetch("http://localhost:5000/api/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: myEmail, password: myPassword }),
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      alert("Login successful!");
+      console.log("Token:", data.user);
+
+      login(data.user, data.token);
+      setShowLogin(false);
+      setMyEmail("");
+      setMyPassword("");
+      handleloginClick();
+    } else {
+      alert("Login failed: " + data.error);
+    }
+  }  catch (error) {
           console.error("Error signing in:", error.code, error.message);
           alert('Login failed');
           setMyEmail("");
           setMyPassword("");
-
         }
     };
 

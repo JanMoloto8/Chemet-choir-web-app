@@ -1,20 +1,40 @@
-import express from "express"
-import dotenv from "dotenv"
-import routes from './routes/index.js'
+// server/src/server.js
+import express from "express";
+import dotenv from "dotenv";
 import { corsMiddleware } from "./middleware/cors.js";
-dotenv.config()
+import { authenticateUser } from "./middleware/authMiddleware.js";
+import routes from "./routes/index.js";
+import authRoutes from "./routes/authRoutes.js";
+import absenceRoutes from "./routes/absenceRoute.js"; 
 
-const app = express()
-const PORT = process.env.PORT|| 3000 ;
+dotenv.config();
 
-//MIDDLEWARE
+const app = express();
+const PORT = process.env.PORT || 3000;
 
+// ----------------------------
+// Middleware
+// ----------------------------
 app.use(express.json());
-app.use(corsMiddleware); 
-//ROUTES
-app.use("/api",routes);
+app.use(corsMiddleware);
 
+// ----------------------------
+// Routes
+// ----------------------------
+app.use("/api", routes);           // general routes
+app.use("/api/auth", authRoutes);  // auth routes (login/register)
+app.use("/api/absences", absenceRoutes);
+// ----------------------------
+// Global Error Handler
+// ----------------------------
+app.use((err, req, res, next) => {
+  console.error("Server Error:", err.message);
+  res.status(500).json({ error: err.message || "Internal server error" });
+});
 
-app.listen(PORT,()=>{
-    console.log(`🛫 Server is running on http://localhost:${PORT}`);
-})
+// ----------------------------
+// Start Server
+// ----------------------------
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on http://localhost:${PORT}`);
+});

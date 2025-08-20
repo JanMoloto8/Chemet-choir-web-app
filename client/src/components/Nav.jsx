@@ -51,7 +51,7 @@ function Nav(){
                         </a>
                     </li>
                     <li>
-                        <a href="#" onClick={() => setIsOpen(false)}>
+                        <a href="#" onClick={() => {setIsOpen(false);navigate('/events')}}>
                             <i className="fas fa-calendar-alt"></i>
                             <span>Events</span>
                         </a>

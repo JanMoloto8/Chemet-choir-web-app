@@ -8,7 +8,7 @@
 body {
     background: linear-gradient(135deg, #2C1810 0%, #3E2723 50%, #1C1C1C 100%);
     min-height: 100vh;
-    color: white;
+    color: rgb(214, 214, 214);
     overflow-x: hidden;
 }
 
@@ -281,7 +281,7 @@ body {
 }
 
 .form-input1::placeholder {
-    color: rgba(255, 255, 255, 0.5);
+    color:  rgba(196, 193, 188, 0.3);
 }
 
 .form-textarea {

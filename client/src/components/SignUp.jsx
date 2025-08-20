@@ -4,9 +4,10 @@ import { FaEnvelope, FaLock, FaUser, FaPhone } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 import { auth } from "../firebase";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { useState } from "react";
-
+import { useState, useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
 function SignUp({ showSignUp, setShowSignUp }) {
+   const { user, token, login } = useContext(AuthContext);
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -66,49 +67,71 @@ function SignUp({ showSignUp, setShowSignUp }) {
 
   const handleSignUp = async (e) => {
     e.preventDefault();
-    
+
     if (!validateForm()) return;
-    
+
     setIsLoading(true);
-    
+
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth,formData.email,  formData.password);
-      // Update user profile with display name
-      await updateProfile(userCredential.user, {
-        displayName: formData.fullName
+      // Send signup request to backend
+      const response = await fetch("http://localhost:5000/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+          username: formData.fullName,
+          phoneNumber: formData.phone
+        }),
       });
-      
-      alert("Account created successfully!");
-      setShowSignUp(false);
-      setFormData({
-        fullName: "",
-        email: "",
-        phone: "",
-        password: "",
-        confirmPassword: ""
-      });
-      console.log("User signed up successfully");
-      
-    } catch (error) {
-      console.error("Error signing up:", error.code, error.message);
-      
-      // Handle specific Firebase errors
-      if (error.code === 'auth/email-already-in-use') {
-        setErrors({ email: "This email is already registered" });
-      } else if (error.code === 'auth/weak-password') {
-        setErrors({ password: "Password is too weak" });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        // Optional: log in user automatically after signup
+        const loginResponse = await fetch("http://localhost:5000/api/auth/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email: formData.email,
+            password: formData.password,
+          }),
+        });
+
+        const loginData = await loginResponse.json();
+
+        if (loginResponse.ok) {
+          // Store user info and token in context + localStorage
+          login(loginData.user, loginData.token);
+        }
+
+        alert("Account created successfully!");
+        setShowSignUp(false);
+        setFormData({
+          fullName: "",
+          email: "",
+          phone: "",
+          password: "",
+          confirmPassword: ""
+        });
+        console.log("User signed up successfully");
       } else {
-        alert('Sign up failed. Please try again.');
+        alert("Sign up failed: " + data.error);
       }
+    } catch (error) {
+      console.error("Error signing up:", error);
+      alert("Sign up failed. Please try again.");
     } finally {
       setIsLoading(false);
     }
   };
+
   const handleSwitchToLogin = () => {
     setShowSignUp(false);
     setShowLogin(true);
     
   };
+
   return (
     <>
       <div className="modal-overlay">
