@@ -6,6 +6,10 @@ import { authenticateUser } from "./middleware/authMiddleware.js";
 import routes from "./routes/index.js";
 import authRoutes from "./routes/authRoutes.js";
 import absenceRoutes from "./routes/absenceRoute.js"; 
+import dashboardRoutes from './routes/dashboardRoutes.js';
+import repertoireRoutes from './routes/repertoireRoutes.js';
+import eventRoutes from './routes/eventRoutes.js';
+import presenceRoutes from './routes/presenceRoutes.js';
 
 dotenv.config();
 
@@ -21,9 +25,15 @@ app.use(corsMiddleware);
 // ----------------------------
 // Routes
 // ----------------------------
-app.use("/api", routes);           // general routes
-app.use("/api/auth", authRoutes);  // auth routes (login/register)
+app.use("/api", routes);       
+app.use("/api/auth", authRoutes); // auth routes (login/register)
 app.use("/api/absences", absenceRoutes);
+app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/repertoire', repertoireRoutes);
+app.use('/api/events', eventRoutes);
+app.use('/api/presence', presenceRoutes);
+
+
 // ----------------------------
 // Global Error Handler
 // ----------------------------

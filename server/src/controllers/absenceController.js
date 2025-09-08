@@ -40,7 +40,7 @@ export const updateAbsenceStatus = async (req, res) => {
     }
 
     // Query by the custom "id" field
-    console.log(uid)
+  
     const snapshot = await db.collection("absences").where("uid", "==", uid).get();
     if (snapshot.empty) {
       return res.status(404).json({ error: "Absence not found" });
@@ -65,7 +65,7 @@ export const getMyAbsences = async (req, res) => {
     }
 
     const snapshot = await db.collection("absences").where("uid", "==", uid).get();
-    console.log(uid);
+
     if (snapshot.empty) {
       return res.status(404).json({ error: "No absences found.",uid:uid });
     }

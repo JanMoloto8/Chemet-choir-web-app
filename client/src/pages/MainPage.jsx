@@ -5,12 +5,12 @@ import React, { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 function MainPage(){
   const { user, token, logout } = useContext(AuthContext);
-
+    
     return(
         <>
         <Nav></Nav>
         <section className="greeting">
-            <h1 className="welcome-title">Welcome back, {user.username}! 🎵</h1>
+            <h1 className="welcome-title">Hi, {user.username}! 🎵</h1>
             <p className="welcome-subtitle">Ready for tonight's rehearsal? The Christmas Concert is just around the corner!</p>
             <div className="status-indicator">
                 <i className="fas fa-calendar-alt"></i>

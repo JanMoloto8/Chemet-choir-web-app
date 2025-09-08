@@ -1,0 +1,199 @@
+/* Background and Layout */
+.conductor-container {
+  min-height: 100vh;
+  background-color: #edf3fc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.conductor-wrapper {
+  position: relative;
+  margin-bottom: 2rem; /* equivalent to mb-8 */
+  text-align: center;  /* centers inline SVG similar to mx-auto */
+}
+/* SVG Styling */
+.body {
+  fill: #16130f;
+  opacity: 0.9;
+}
+
+.head {
+  fill: #020101;
+  opacity: 0.9;
+}
+
+.arm {
+  stroke: #0a0908;
+  stroke-width: 6;
+  stroke-linecap: round;
+}
+
+.hand {
+  fill: #000000;
+}
+
+.baton {
+  stroke: #080808;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.leg {
+  stroke: #0d0e11;
+  stroke-width: 8;
+  stroke-linecap: round;
+}
+
+/* Animated Arms */
+.conductor-left-arm {
+  animation: conductLeft 3s ease-in-out infinite;
+  transform-origin: 40px 70px;
+}
+
+.conductor-right-arm {
+  animation: conductRight 2s ease-in-out infinite;
+  transform-origin: 80px 70px;
+}
+
+/* Musical Notes */
+.note {
+  font-size: 18px;
+  fill: #f1fceb;
+  animation: bounceNote 3s infinite;
+}
+
+.note-1 {
+  font-size: 20px;
+  fill: #dfdfdf;
+  animation: floatNote1 3s ease-in-out infinite;
+}
+
+.note-2 {
+  font-size: 16px;
+  fill: #FBBF24;
+  animation: floatNote2 2.5s ease-in-out infinite;
+}
+
+.note-3 {
+  font-size: 18px;
+  fill: #F59E0B;
+  animation: floatNote3 2.8s ease-in-out infinite;
+}
+
+.note-4 {
+  font-size: 14px;
+  fill: #FBBF24;
+  animation: floatNote4 3.2s ease-in-out infinite;
+}
+.loading-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem; /* equivalent to space-y-4 */
+  align-items: center;
+  text-align: center;
+}
+/* Loading Text */
+.loading-text {
+  color: #dfb132;
+  font-size: 1.5rem;
+  font-weight: bold;
+  animation: pulse 2s infinite;
+  text-align: center;
+}
+
+/* Dots */
+.loading-dots {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.dot {
+  width: 0.75rem;
+  height: 0.75rem;
+  background-color: #FBBF24;
+  border-radius: 9999px;
+  animation: bounce 1.5s infinite;
+}
+
+.dot-2 {
+  animation-delay: 150ms;
+}
+
+.dot-3 {
+  animation-delay: 300ms;
+}
+
+/* Progress Bar */
+.progress-wrapper {
+  width: 16rem;
+  margin: 1.5rem auto 0;
+}
+
+.progress-bar {
+  width: 100%;
+  background-color: #FDE68A;
+  height: 0.5rem;
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.loading-bar {
+  height: 100%;
+  background: linear-gradient(to right, #FBBF24, #D97706);
+  animation: loadingProgress 3s ease-in-out infinite;
+  border-radius: 9999px;
+}
+
+/* Animations */
+@keyframes conductLeft {
+  0%, 100% { transform: rotate(-15deg); }
+  25% { transform: rotate(-45deg); }
+  50% { transform: rotate(-10deg); }
+  75% { transform: rotate(-35deg); }
+}
+
+@keyframes conductRight {
+  0%, 100% { transform: rotate(15deg); }
+  25% { transform: rotate(10deg); }
+  50% { transform: rotate(45deg); }
+  75% { transform: rotate(35deg); }
+}
+
+@keyframes floatNote1 {
+  0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.7; }
+  33% { transform: translateY(-10px) rotate(10deg); opacity: 1; }
+  66% { transform: translateY(-5px) rotate(-5deg); opacity: 0.8; }
+}
+
+@keyframes floatNote2 {
+  0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.6; }
+  50% { transform: translateY(-15px) rotate(-10deg); opacity: 1; }
+}
+
+@keyframes floatNote3 {
+  0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.8; }
+  40% { transform: translateY(-8px) rotate(15deg); opacity: 1; }
+  80% { transform: translateY(-3px) rotate(-8deg); opacity: 0.9; }
+}
+
+@keyframes floatNote4 {
+  0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.5; }
+  60% { transform: translateY(-12px) rotate(-15deg); opacity: 1; }
+}
+
+@keyframes loadingProgress {
+  0% { width: 0%; }
+  50% { width: 70%; }
+  100% { width: 100%; }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}

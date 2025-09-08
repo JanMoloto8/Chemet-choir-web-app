@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useContext,useEffect } from 'react';
+import { AuthContext } from "../context/AuthContext";
+
 import {
   Calendar,
   Plus,
@@ -13,38 +15,13 @@ import Nav from '../components/Nav';
 import '../css/Events.css';
 
 const EventsCalendar = () => {
+    const { user, token, logout } = useContext(AuthContext);
+    console.log(user.role)  
     const [currentDate, setCurrentDate] = useState(new Date());
     const [selectedDate, setSelectedDate] = useState(null);
     const [showAddEvent, setShowAddEvent] = useState(false);
-      const [events, setEvents] = useState([
-    {
-      id: 1,
-      title: 'Christmas Rehearsal',
-      date: '2025-08-25',
-      time: '19:00',
-      location: 'Main Hall',
-      type: 'rehearsal',
-      description: 'Final rehearsal before Christmas performance'
-    },
-    {
-      id: 2,
-      title: 'Community Concert',
-      date: '2025-08-28',
-      time: '15:00',
-      location: 'City Theatre',
-      type: 'performance',
-      description: 'Public performance at the city theatre'
-    },
-    {
-      id: 3,
-      title: 'Vocal Workshop',
-      date: '2025-08-30',
-      time: '10:00',
-      location: 'Studio B',
-      type: 'workshop',
-      description: 'Breathing techniques workshop'
-    }
-  ]);
+    const [loading, setLoading] = useState(true);
+    const [events, setEvents] = useState([]);
 
   const [newEvent, setNewEvent] = useState({
     title: '',
@@ -99,24 +76,41 @@ const EventsCalendar = () => {
     setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + direction, 1));
   };
 
-  const handleAddEvent = () => {
-    if (newEvent.title && newEvent.date && newEvent.time) {
-      const event = {
-        id: events.length + 1,
-        ...newEvent
-      };
-      setEvents([...events, event]);
+const handleAddEvent = async () => {
+  if (newEvent.title && newEvent.date && newEvent.time) {
+    try {
+      const res = await fetch("http://localhost:5000/api/events/add", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newEvent),
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to add event");
+      }
+
+      const savedEvent = await res.json();
+
+      // Merge new event into state (in case you want instant UI update)
+      setEvents((prev) => [...prev, savedEvent]);
+
+      // Reset form
       setNewEvent({
-        title: '',
-        date: '',
-        time: '',
-        location: '',
-        type: 'rehearsal',
-        description: ''
+        title: "",
+        date: "",
+        time: "",
+        location: "",
+        type: "rehearsal",
+        description: "",
       });
       setShowAddEvent(false);
+    } catch (error) {
+      console.error("Error adding event:", error);
     }
-  };
+  }
+};
 
   const handleDeleteEvent = (eventId) => {
     setEvents(events.filter(event => event.id !== eventId));
@@ -124,7 +118,48 @@ const EventsCalendar = () => {
 
   const days = getDaysInMonth(currentDate);
   const today = new Date();
+  useEffect(() => {
+  const fetchEvents = async () => {
+    try {
+      const res = await fetch("http://localhost:5000/api/events/list");
+      const data = await res.json();
 
+      const newEvents = data.events.map(event => {
+        // Convert Firestore timestamp to JS Date object
+        const eventDate = event.eventDateTime && event.eventDateTime._seconds
+          ? new Date(event.eventDateTime._seconds * 1000)
+          : null;
+
+        // Format date as YYYY-MM-DD and time as HH:mm
+        const formattedDate = eventDate
+          ? eventDate.toISOString().split('T')[0]
+          : '';
+
+        const formattedTime = eventDate
+          ? eventDate.toTimeString().slice(0, 5)
+          : '';
+
+        return {
+          id: event.id,
+          title: event.title || '',
+          date: formattedDate,
+          time: formattedTime,
+          location: event.location || '',
+          type: event.type || '',
+          description: event.description || ''
+        };
+      });
+
+      setEvents(newEvents);
+    } catch (error) {
+      console.error("Error fetching events:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchEvents();
+}, []);
     return(
     <>
     <Nav/>
@@ -141,10 +176,12 @@ const EventsCalendar = () => {
               <p className="calendar-subtitle">Manage choir events and rehearsals</p>
             </div>
           </div>
-          <button onClick={() => setShowAddEvent(true)} className="add-event-button">
-            <Plus className="plus-icon" />
-            Add Event
-          </button>
+          {user.role === 'admin' && (
+            <button onClick={() => setShowAddEvent(true)} className="add-event-button">
+              <Plus className="plus-icon" />
+              Add Event
+            </button>
+          )}
         </div>
 
         {/* Continue with Calendar Grid, Sidebar, and Modal... */}
@@ -197,7 +234,7 @@ const EventsCalendar = () => {
                             {dayEvents.slice(0, 2).map(event => (
                                 <div
                                 key={event.id}
-                                className={`calendar-day-event ${eventTypes[event.type].class}`}
+                                className={`calendar-day-event ${eventTypes[event.type]?.class || ''}`}
                                 >
                                 {event.title}
                                 </div>
@@ -216,7 +253,7 @@ const EventsCalendar = () => {
                 <div className="calendar-sidebar">
                     {/* Upcoming Events */}
                     <div className="sidebar-box">
-                    <h3 className="sidebar-title">Upcoming Events</h3>
+                    <h3 className="sidebar-title">Events</h3>
                     {events.slice(0, 5).map(event => (
                         <div key={event.id} className="sidebar-event">
                         <div className="sidebar-event-content">

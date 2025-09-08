@@ -1,19 +1,39 @@
-import "../css/Nav.css"
+import "../css/Nav.css";
 import logo from '../assets/logo.png';
-import { useState } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
 
-function Nav(){
+function Nav() {
+    const { user, token, logout } = useContext(AuthContext);
+    const [canSee, setCanSee] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
-    const navigate = useNavigate();
 
+    const navigate = useNavigate();
 
     const toggleNav = () => {
         setIsOpen(!isOpen);
     };
 
+    const handleLogout = () => {
+        const confirmLogout = window.confirm("🔒 Are you sure you want to log out?");
+        if (confirmLogout) {
+            // Perform logout actions
+            console.log("Logging out...");
+            localStorage.clear();
+            navigate("/");
+            setIsOpen(false);
+        }
+    };
 
-    return(
+    // Update canSee based on user role
+    useEffect(() => {
+        if (user.role !== 'Regular member') {
+            setCanSee(true);
+        }
+    }, [user.role]);  
+
+    return (
         <>
             {/* Mobile menu button */}
             <button className="mobile-menu-btn" onClick={toggleNav}>
@@ -26,32 +46,40 @@ function Nav(){
             <div className={`nav-bar ${isOpen ? 'nav-open' : ''}`}>
                 <img className="logo" src={logo} alt="logo" />
                 <ul className="nav-items">
+                    {/* 🔐 Logout item */}
                     <li>
-                        <a href="#" onClick={() => {setIsOpen(false); navigate('/Main')}}>
+                        <a href="#" onClick={handleLogout}>
+                            <i className="fas fa-sign-out-alt"></i>
+                            <span>Logout</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" onClick={() => { setIsOpen(false); navigate('/Main') }}>
                             <i className="fas fa-chart-line"></i>
                             <span>Dashboard</span>
                         </a>
                     </li>
                     <li>
-                        <a href="#" onClick={() => {setIsOpen(false);navigate('/absence')}}>
+                        <a href="#" onClick={() => { setIsOpen(false); navigate('/absence') }}>
                             <i className="fas fa-file-alt"></i>
                             <span>Absence report</span>
                         </a>
                     </li>
                     <li>
-                        <a href="#" onClick={() => {setIsOpen(false);navigate('/rep')}}>
+                        <a href="#" onClick={() => { setIsOpen(false); navigate('/rep') }}>
                             <i className="fas fa-music"></i>
                             <span>Repertoire</span>
                         </a>
                     </li>
-                    <li>
-                        <a href="#" onClick={() => setIsOpen(false)}>
+                    {canSee && <li>
+                        <a href="#" onClick={() => { setIsOpen(false); navigate('/attend') }}>
                             <i className="fas fa-user-plus"></i>
                             <span>Attendance</span>
                         </a>
-                    </li>
+                    </li>}
+
                     <li>
-                        <a href="#" onClick={() => {setIsOpen(false);navigate('/events')}}>
+                        <a href="#" onClick={() => { setIsOpen(false); navigate('/events') }}>
                             <i className="fas fa-calendar-alt"></i>
                             <span>Events</span>
                         </a>
@@ -62,4 +90,4 @@ function Nav(){
     );
 }
 
-export default Nav
+export default Nav;

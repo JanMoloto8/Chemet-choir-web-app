@@ -2,12 +2,13 @@
 import "../css/signUp.css";
 import { FaEnvelope, FaLock, FaUser, FaPhone } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
-import { auth } from "../firebase";
-import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { useState, useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
+
 function SignUp({ showSignUp, setShowSignUp }) {
    const { user, token, login } = useContext(AuthContext);
+   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -81,40 +82,48 @@ function SignUp({ showSignUp, setShowSignUp }) {
           email: formData.email,
           password: formData.password,
           username: formData.fullName,
-          phoneNumber: formData.phone
+          phoneNumber: formData.phone,
+          codeOfConductSigned:false,
+          gender:"",
+          instrumentalSkills:[],
+          role:"member",
+          voicePart:""
         }),
       });
 
       const data = await response.json();
 
       if (response.ok) {
-        // Optional: log in user automatically after signup
-        const loginResponse = await fetch("http://localhost:5000/api/auth/login", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            email: formData.email,
-            password: formData.password,
-          }),
-        });
+          // Optional: log in user automatically after signup
+          const loginResponse = await fetch("http://localhost:5000/api/auth/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              email: formData.email,
+              password: formData.password,
+            }),
+          });
 
-        const loginData = await loginResponse.json();
+          const loginData = await loginResponse.json();
 
-        if (loginResponse.ok) {
-          // Store user info and token in context + localStorage
-          login(loginData.user, loginData.token);
-        }
+          if (loginResponse.ok) {
+            // Store user info and token in context + localStorage
+            login(loginData.user, loginData.token);
+          }
 
-        alert("Account created successfully!");
-        setShowSignUp(false);
-        setFormData({
-          fullName: "",
-          email: "",
-          phone: "",
-          password: "",
-          confirmPassword: ""
-        });
-        console.log("User signed up successfully");
+          alert("Account created successfully!");
+          setShowSignUp(false);
+          setFormData({
+            fullName: "",
+            email: "",
+            phone: "",
+            password: "",
+            confirmPassword: ""
+            
+          });
+          navigate("/onboarding")
+          console.log("Sign up successful");
+
       } else {
         alert("Sign up failed: " + data.error);
       }

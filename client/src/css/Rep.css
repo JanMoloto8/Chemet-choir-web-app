@@ -177,3 +177,303 @@
     grid-template-columns: repeat(4, 1fr);
   }
 }
+
+
+/* ---------- ADD SONG BUTTON ---------- */
+.add-song-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: linear-gradient(45deg, #8B4513, #CD853F);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.add-song-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(139, 69, 19, 0.3);
+  background: linear-gradient(45deg, #A0522D, #DEB887);
+}
+
+.add-song-btn:active {
+  transform: translateY(0);
+}
+
+/* ---------- MODAL STYLES ---------- */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: modalFadeIn 0.3s ease;
+}
+
+.modal-content {
+  background: linear-gradient(135deg, rgba(139, 69, 19, 0.95), rgba(160, 82, 45, 0.95));
+  backdrop-filter: blur(20px);
+  border-radius: 20px;
+  padding: 0;
+  max-width: 600px;
+  width: 90vw;
+  max-height: 90vh;
+  overflow-y: auto;
+  border: 1px solid rgba(205, 133, 63, 0.3);
+  animation: modalSlideIn 0.3s ease;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid rgba(205, 133, 63, 0.3);
+}
+
+.modal-header h2 {
+  color: white;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 50%;
+  transition: background 0.3s ease;
+}
+
+.close-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.modal-form {
+  padding: 2rem;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+@media (min-width: 768px) {
+  .form-row {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group label {
+  color: white;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  background: rgba(230, 211, 193, 0.9);
+  border: 1px solid rgba(205, 133, 63, 0.5);
+  border-radius: 8px;
+  padding: 0.75rem;
+  font-size: 1rem;
+  color: #4b2e1e;
+  transition: all 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #CD853F;
+  box-shadow: 0 0 0 2px rgba(205, 133, 63, 0.3);
+  background: rgba(230, 211, 193, 1);
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+/* ---------- FILE INPUT STYLES ---------- */
+.file-group input[type="file"] {
+  display: none;
+}
+
+.file-input-wrapper {
+  position: relative;
+  cursor: pointer;
+}
+
+.file-input-display {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(230, 211, 193, 0.9);
+  border: 2px dashed rgba(205, 133, 63, 0.5);
+  border-radius: 8px;
+  padding: 1rem;
+  transition: all 0.3s ease;
+  color: #4b2e1e;
+}
+
+.file-input-display:hover {
+  border-color: #CD853F;
+  background: rgba(230, 211, 193, 1);
+}
+
+.file-input-display .rep-icon {
+  width: 20px;
+  height: 20px;
+}
+
+/* ---------- MODAL ACTIONS ---------- */
+.modal-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(205, 133, 63, 0.3);
+}
+
+.cancel-btn {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 600;
+}
+
+.cancel-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.submit-btn {
+  background: linear-gradient(45deg, #228B22, #32CD32);
+  color: white;
+  border: none;
+  padding: 0.75rem 2rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 600;
+}
+
+.submit-btn:hover {
+  background: linear-gradient(45deg, #32CD32, #228B22);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(34, 139, 34, 0.3);
+}
+
+/* ---------- ANIMATIONS ---------- */
+@keyframes modalFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes modalSlideIn {
+  from { 
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+  to { 
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Add this to your SongCard.css file */
+
+/* ---------- DISABLED BUTTON STYLES ---------- */
+.song-actions button.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.song-actions button.disabled:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+/* ---------- NO SONGS MESSAGE ---------- */
+.no-songs-message {
+  grid-column: 1 / -1;
+  text-align: center;
+  
+  padding: 3rem 2rem;
+  color: rgba(255, 255, 255, 0.7);
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(20px);
+  border-radius: 20px;
+  border: 1px solid rgba(139, 69, 19, 0.3);
+}
+@media (min-width: 1000px) {
+  .no-songs-message{
+    margin: 30px 160px;
+  }
+}
+
+
+.no-songs-message .rep-icon {
+  width: 48px;
+  height: 48px;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+.no-songs-message p {
+  font-size: 1.2rem;
+  margin: 0;
+}
+
+/* ---------- SONG TITLE OVERFLOW ---------- */
+.song-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ---------- TAGS CONTAINER ---------- */
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0.5rem 0;
+}
+
+.tag {
+  font-size: 0.8rem;
+  padding: 0.25rem 0.5rem;
+  background: rgba(139, 69, 19, 0.8);
+  color: white;
+  border-radius: 12px;
+  white-space: nowrap;
+}

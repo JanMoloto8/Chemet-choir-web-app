@@ -13,15 +13,7 @@ export default function Absence() {
         file: null
     });
     const [absences, setAbsences] = useState([
-        {
-            id: 1,
-            title: "Family Emergency",
-            date: "Dec 15, 2023",
-            event: "Christmas Rehearsal",
-            status: "approved",
-            reason: "Had to attend a family gathering.",
-            proof: "hospital.pdf"
-        }
+
     ]);
 
     const handleInputChange = (e) => {
