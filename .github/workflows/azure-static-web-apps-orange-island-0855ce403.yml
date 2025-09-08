@@ -30,38 +30,41 @@ jobs:
           output_location: "dist"
 
   build_and_deploy_node_server:
-      if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
-      runs-on: ubuntu-latest
-      name: Build and Deploy Node Server (App Service)
-      steps:
-        - uses: actions/checkout@v3
-    
-        - name: Setup Node.js
-          uses: actions/setup-node@v3
-          with:
-            node-version: '18'
-    
-        - name: Install dependencies
-          working-directory: ./server
-          run: npm install
-    
-        # Uncomment the following if you have a build step for your server
-        # - name: Build Server
-        #   working-directory: ./server
-        #   run: npm run build
-    
-        - name: Azure Login
-          uses: azure/login@v1
-          with:
-            creds: ${{ secrets.AZURE_CREDENTIALS }}
-    
-        - name: Deploy to Azure Web App
-          uses: azure/webapps-deploy@v2
-          with:
-            app-name: chemet-server # Replace with your App Service name
-            publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-            package: ./server
+    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
+    runs-on: ubuntu-latest
+    name: Build and Deploy Node Server (App Service)
+    steps:
+      - uses: actions/checkout@v3
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+
+      - name: Install dependencies
+        working-directory: ./server
+        run: npm install
+
+      # Uncomment the following if you have a build step for your server
+      # - name: Build Server
+      #   working-directory: ./server
+      #   run: npm run build
+      - name: Zip Server Code
+        run: |
+          cd server
+          zip -r ../server.zip . -x "node_modules/*"
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: chemet-server # Replace with your App Service name
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: ./server
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
@@ -73,5 +76,3 @@ jobs:
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_ORANGE_ISLAND_0855CE403 }}
           action: "close"
-
-
