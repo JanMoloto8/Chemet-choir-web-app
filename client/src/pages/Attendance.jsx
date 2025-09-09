@@ -55,7 +55,7 @@ const Attendance = () => {
     try {
       const currentDateStr = getCurrentDateString();
       const response = await fetch(
-        `http://localhost:5000/api/presence/register?voicePart=${part}`
+        `https://chemet-server-eububufcehb4bjav.southafricanorth-01.azurewebsites.net/api/presence/register?voicePart=${part}`
       );
 
       if (response.ok) {
@@ -103,7 +103,7 @@ const Attendance = () => {
     setLoading(true);
     try {
       const response = await fetch(
-        `http://localhost:5000/api/presence/users?voicePart=${part}`,
+        `https://chemet-server-eububufcehb4bjav.southafricanorth-01.azurewebsites.net/api/presence/users?voicePart=${part}`,
         {
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -151,7 +151,7 @@ const Attendance = () => {
 
       };
 
-      const response = await fetch('http://localhost:5000/api/presence/submit', {
+      const response = await fetch('https://chemet-server-eububufcehb4bjav.southafricanorth-01.azurewebsites.net/api/presence/submit', {
         method: 'POST',
         headers: {
        

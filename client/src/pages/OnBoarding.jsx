@@ -246,7 +246,7 @@ const handleSubmit = async () => {
   setIsLoading(true);
 
   try {
-    const response = await fetch("http://localhost:5000/api/auth/update", {
+    const response = await fetch("https://chemet-server-eububufcehb4bjav.southafricanorth-01.azurewebsites.net/api/auth/update", {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

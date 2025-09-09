@@ -75,7 +75,7 @@ function SignUp({ showSignUp, setShowSignUp }) {
 
     try {
       // Send signup request to backend
-      const response = await fetch("http://localhost:5000/api/auth/register", {
+      const response = await fetch("https://chemet-server-eububufcehb4bjav.southafricanorth-01.azurewebsites.net/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -95,7 +95,7 @@ function SignUp({ showSignUp, setShowSignUp }) {
 
       if (response.ok) {
           // Optional: log in user automatically after signup
-          const loginResponse = await fetch("http://localhost:5000/api/auth/login", {
+          const loginResponse = await fetch("https://chemet-server-eububufcehb4bjav.southafricanorth-01.azurewebsites.net/api/auth/login", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({

@@ -79,7 +79,7 @@ const EventsCalendar = () => {
 const handleAddEvent = async () => {
   if (newEvent.title && newEvent.date && newEvent.time) {
     try {
-      const res = await fetch("http://localhost:5000/api/events/add", {
+      const res = await fetch("https://chemet-server-eububufcehb4bjav.southafricanorth-01.azurewebsites.net/api/events/add", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -121,7 +121,7 @@ const handleAddEvent = async () => {
   useEffect(() => {
   const fetchEvents = async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/events/list");
+      const res = await fetch("https://chemet-server-eububufcehb4bjav.southafricanorth-01.azurewebsites.net/api/events/list");
       const data = await res.json();
 
       const newEvents = data.events.map(event => {

@@ -53,7 +53,7 @@ export default function Absence() {
     };
 
     try {
-        const response = await fetch('http://localhost:5000/api/absences/submit', {
+        const response = await fetch('https://chemet-server-eububufcehb4bjav.southafricanorth-01.azurewebsites.net/api/absences/submit', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -99,7 +99,7 @@ export default function Absence() {
 
         const fetchAbsences = async () => {
             try {
-                const response = await fetch(`http://localhost:5000/api/absences/mine?uid=${user.uid}`, {
+                const response = await fetch(`https://chemet-server-eububufcehb4bjav.southafricanorth-01.azurewebsites.net/api/absences/mine?uid=${user.uid}`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',

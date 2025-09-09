@@ -177,7 +177,7 @@ export default function Rep() {
         useEffect(() => {
         const fetchSongs = async () => {
             try {
-                const res = await fetch("http://localhost:5000/api/repertoire/list");
+                const res = await fetch("https://chemet-server-eububufcehb4bjav.southafricanorth-01.azurewebsites.net/api/repertoire/list");
 
                 const data = await res.json();
                 console.log(data.songs[0].category)
