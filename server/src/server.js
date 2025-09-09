@@ -25,7 +25,13 @@ app.use(corsMiddleware);
 // ----------------------------
 // Routes
 // ----------------------------
-app.use("/api", routes);       
+app.get("/", (req, res) => {
+  res.send("Welcome to the Chemet API!");
+});
+app.get("/api", (req, res) => {
+  res.send("✅ API is up and running!");
+});
+// app.use("/api", routes);       
 app.use("/api/auth", authRoutes); // auth routes (login/register)
 app.use("/api/absences", absenceRoutes);
 app.use('/api/dashboard', dashboardRoutes);
