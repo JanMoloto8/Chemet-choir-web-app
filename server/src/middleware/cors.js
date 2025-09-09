@@ -3,7 +3,8 @@ import cors from "cors";
 
 const allowedOrigins = [
   "http://localhost:3000",   
-   "http://localhost:5173"
+   "http://localhost:5173",
+   "https://orange-island-0855ce403.2.azurestaticapps.net/"
 
 ];
 
