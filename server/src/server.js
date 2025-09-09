@@ -10,7 +10,7 @@ import dashboardRoutes from './routes/dashboardRoutes.js';
 import repertoireRoutes from './routes/repertoireRoutes.js';
 import eventRoutes from './routes/eventRoutes.js';
 import presenceRoutes from './routes/presenceRoutes.js';
-
+console.log("✅ server.js starting...");
 dotenv.config();
 
 const app = express();
@@ -26,9 +26,11 @@ app.use(corsMiddleware);
 // Routes
 // ----------------------------
 app.get("/", (req, res) => {
+    console.log("✅ Health check endpoint hit");
   res.send("Welcome to the Chemet API!");
 });
 app.get("/api", (req, res) => {
+    console.log("✅ /api health check hit");
   res.send("✅ API is up and running!");
 });
 // app.use("/api", routes);       
