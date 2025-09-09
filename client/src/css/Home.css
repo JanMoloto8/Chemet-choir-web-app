@@ -332,6 +332,7 @@ h1 {
     
     /* Mobile sidebar auth buttons */
     .mobile-sidebar .mobile-auth {
+        display: contents;
         margin-top: 30px;
         flex-direction: column;
         align-items: stretch;
