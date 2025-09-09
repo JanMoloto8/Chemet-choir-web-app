@@ -1,11 +1,27 @@
 import admin from "firebase-admin";
-import dotenv from "dotenv";
 
-dotenv.config();
-
-if (!process.env.FIREBASE_PRIVATE_KEY) {
-  throw new Error("FIREBASE_PRIVATE_KEY is not set in .env");
+// Load .env only in development
+if (process.env.NODE_ENV !== "production") {
+  const dotenv = await import("dotenv");
+  dotenv.config();
 }
+
+// Safety checks
+const requiredVars = [
+  "FIREBASE_PRIVATE_KEY",
+  "FIREBASE_PROJECT_ID",
+  "FIREBASE_CLIENT_EMAIL",
+  "FIREBASE_PRIVATE_KEY_ID",
+  "FIREBASE_CLIENT_ID",
+];
+
+for (const varName of requiredVars) {
+  if (!process.env[varName]) {
+    throw new Error(`${varName} is not set in environment variables.`);
+  }
+}
+
+// Initialize Firebase Admin SDK
 admin.initializeApp({
   credential: admin.credential.cert({
     type: "service_account",
