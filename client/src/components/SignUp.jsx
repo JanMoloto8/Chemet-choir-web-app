@@ -158,7 +158,7 @@ function SignUp({ showSignUp, setShowSignUp }) {
           <form onSubmit={handleSignUp}>
             <label>Full Name</label>
             <div className={`input-icon ${errors.fullName ? 'error' : ''}`}>
-              <FaUser />
+           
               <input 
                 type="text" 
                 placeholder="Enter your full name"
@@ -184,7 +184,7 @@ function SignUp({ showSignUp, setShowSignUp }) {
 
             <label>Phone Number <span className="optional">(Optional)</span></label>
             <div className="input-icon">
-              <FaPhone />
+          
               <input 
                 type="tel" 
                 placeholder="Enter your phone number"
