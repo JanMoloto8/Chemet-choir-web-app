@@ -99,7 +99,16 @@ export default function Absence() {
 
         const fetchAbsences = async () => {
             try {
-                const response = await fetch(`https://chemet-server-eububufcehb4bjav.southafricanorth-01.azurewebsites.net/api/absences/mine?uid=${user.uid}`, {
+                let url;
+
+               if (user?.role === "admin") {
+                    // Admin fetches all absences from local server
+                    url = "http://localhost:5000/api/absences/";
+                } else {
+                    // Regular user fetches only their own absences
+                    url = `https://chemet-server-eububufcehb4bjav.southafricanorth-01.azurewebsites.net/api/absences/mine?uid=${user.uid}`;
+                }
+                const response = await fetch(url, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -113,7 +122,7 @@ export default function Absence() {
                 }
 
                 const data = await response.json();
-                setAbsences(data.absences); // Backend must return: { absences: [...] }
+                setAbsences(data.absences); 
             } catch (err) {
                 console.error('Error fetching absences:', err);
             }
@@ -122,7 +131,7 @@ export default function Absence() {
         if (user?.uid) {
             fetchAbsences();
         }
-    },);
+    },[user]);
 
 
     return (
@@ -130,10 +139,12 @@ export default function Absence() {
             <Nav />
 
             <header className="header">
-                <button className="report-btn" onClick={() => setIsModalOpen(true)}>
-                    <i className="fas fa-plus"></i>
-                    Report
-                </button>
+                {user?.role !== "admin" && (
+                    <button className="report-btn" onClick={() => setIsModalOpen(true)}>
+                        <i className="fas fa-plus"></i>
+                        Report
+                    </button>
+                )}
             </header>
 
             <div className="container">

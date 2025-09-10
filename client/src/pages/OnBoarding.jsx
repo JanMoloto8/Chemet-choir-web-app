@@ -273,7 +273,7 @@ const handleSubmit = async () => {
 
     if (response.ok) {
       console.log("Onboarding complete:", data);
-      alert("Welcome to the choir! 🎶 Your profile has been updated.");
+      alert("Welcome to the choir! 🎶 Your profile has been updated. You can now log in");
       // You can redirect to dashboard here if needed
       // navigate("/dashboard");
     } else {
@@ -285,7 +285,7 @@ const handleSubmit = async () => {
     alert("Something went wrong while submitting your details.");
   } finally {
     setIsLoading(false);
-    navigate("/Main")
+    navigate("/")
   }
 };
 
