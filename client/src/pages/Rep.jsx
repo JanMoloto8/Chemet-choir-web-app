@@ -4,6 +4,38 @@ import '../css/Rep.css';
 import { useState, useContext, useRef,useEffect } from 'react';
 import SongCard from '../components/SongCard';
 import { AuthContext } from "../context/AuthContext";
+const getEmbeddedVideoURL = (url) => {
+    if (!url) return null;
+
+    // Extract the domain for easier matching
+    const domain = new URL(url).hostname;
+
+    // YouTube or YouTube-wrappers like ymusicapp
+    if (
+        domain.includes('youtube.com') ||
+        domain.includes('youtu.be') ||
+        domain.includes('ymusicapp.com')
+    ) {
+        let videoId;
+
+        if (domain.includes('youtu.be')) {
+            videoId = url.split('youtu.be/')[1].split('?')[0];
+        } else {
+            videoId = new URL(url).searchParams.get('v');
+        }
+
+        if (videoId) {
+            return `https://www.youtube.com/embed/${videoId}`;
+        }
+    }
+
+    // TikTok
+    if (url.includes('tiktok.com')) {
+        return url.replace('www.tiktok.com', 'www.tiktok.com/embed');
+    }
+
+    return null;
+};
 
 export default function Rep() {
     const { user, token, logout } = useContext(AuthContext);
@@ -13,6 +45,8 @@ export default function Rep() {
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedCategory, setSelectedCategory] = useState("all");
     const [showModal, setShowModal] = useState(false);
+    const [currentVideoLink, setCurrentVideoLink] = useState(null);
+
 
     const [newSong, setNewSong] = useState({
         title: '',
@@ -152,13 +186,15 @@ export default function Rep() {
         });
     };
 
-    const handlePlay = (songData) => {
-        if (songData.videoLink) {
-            window.open(songData.videoLink, '_blank');
-        } else {
-            alert('No video link available for this song');
-        }
-    };
+const handlePlay = (songData) => {
+    if (songData.videoLink.includes('tiktok.com')) {
+        window.open(songData.videoLink, '_blank');
+    } else if (songData.videoLink) {
+        setCurrentVideoLink(songData.videoLink);
+    } else {
+        alert('No video link available for this song');
+    }
+};
 
     const handleDownload = (songData) => {
         if (songData.sheetMusicFile) {
@@ -458,6 +494,32 @@ export default function Rep() {
                                     </button>
                                 </div>
                             </form>
+                        </div>
+                    </div>
+                )}
+
+                {/* === Embedded Video Modal === */}
+                {currentVideoLink && (
+                    <div className="modal-overlay" onClick={() => setCurrentVideoLink(null)}>
+                        <div className="modal-box" onClick={(e) => e.stopPropagation()}>
+                            <div className="modal-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                                <h2>Now Playing</h2>
+                                <button className="close-btn" onClick={() => setCurrentVideoLink(null)}>
+                                    <X className="rep-icon" />
+                                </button>
+                            </div>
+
+                            <div className="video-wrapper">
+                                <iframe
+                                    width="100%"
+                                    height="315"
+                                    src={getEmbeddedVideoURL(currentVideoLink)}
+                                    title="Video Player"
+                                    frameBorder="0"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                    allowFullScreen
+                                />
+                            </div>
                         </div>
                     </div>
                 )}
