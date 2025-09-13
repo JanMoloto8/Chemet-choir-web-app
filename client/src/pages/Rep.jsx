@@ -94,7 +94,7 @@ export default function Rep() {
 
         try {
             // Sending the formatted data to the backend API
-            const response = await fetch("http://localhost:5000/api/repertoire/add", {
+            const response = await fetch("https://chemet-server-eububufcehb4bjav.southafricanorth-01.azurewebsites.net/api/repertoire/add", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
