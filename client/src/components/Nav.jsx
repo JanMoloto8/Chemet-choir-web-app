@@ -91,7 +91,7 @@ function Nav() {
 
                     {/* Admin only - User Management */}
                     {isAdmin && <li>
-                        <a href="" onClick={() => { setIsOpen(false); navigate('/management') }}>
+                        <a href="#" onClick={() => { setIsOpen(false); navigate('/management') }}>
                             <i className="fas fa-users"></i>
                             <span>User Management</span>
                         </a>
