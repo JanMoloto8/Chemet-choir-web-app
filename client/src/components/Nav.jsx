@@ -7,6 +7,7 @@ import { AuthContext } from "../context/AuthContext";
 function Nav() {
     const { user, token, logout } = useContext(AuthContext);
     const [canSee, setCanSee] = useState(false);
+    const [isAdmin, setIsAdmin] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
 
     const navigate = useNavigate();
@@ -26,10 +27,13 @@ function Nav() {
         }
     };
 
-    // Update canSee based on user role
+    // Update canSee based on user role and check admin status
     useEffect(() => {
         if (user.role !== 'Regular member') {
             setCanSee(true);
+        }
+        if (user.role == "admin") {
+            setIsAdmin(true);
         }
     }, [user.role]);  
 
@@ -84,6 +88,14 @@ function Nav() {
                             <span>Events</span>
                         </a>
                     </li>
+
+                    {/* Admin only - User Management */}
+                    {isAdmin && <li>
+                        <a href="" onClick={() => { setIsOpen(false); navigate('/management') }}>
+                            <i className="fas fa-users"></i>
+                            <span>User Management</span>
+                        </a>
+                    </li>}
                 </ul>
             </div>
         </>
