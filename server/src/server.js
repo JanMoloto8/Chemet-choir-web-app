@@ -10,6 +10,8 @@ import dashboardRoutes from './routes/dashboardRoutes.js';
 import repertoireRoutes from './routes/repertoireRoutes.js';
 import eventRoutes from './routes/eventRoutes.js';
 import presenceRoutes from './routes/presenceRoutes.js';
+import userRoutes from './routes/userRoutes.js';
+
 console.log("✅ server.js starting...");
 dotenv.config();
 
@@ -40,7 +42,7 @@ app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/repertoire', repertoireRoutes);
 app.use('/api/events', eventRoutes);
 app.use('/api/presence', presenceRoutes);
-
+app.use('/api/users',userRoutes);
 
 // ----------------------------
 // Global Error Handler
