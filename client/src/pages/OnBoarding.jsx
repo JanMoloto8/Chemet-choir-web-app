@@ -126,7 +126,7 @@ function MembershipStep({ formData, handleInputChange }) {
       <div>
         <label>Choir Section Role *</label>
         <div className="column">
-          {['Head of voice', 'Secretary', 'Regular member', 'Marketer', 'Treasurer'].map(
+          {['Head of voice', 'Secretary', 'Regular member', 'Marketer', 'Treasurer','Liason officer'].map(
             (role) => (
               <button
                 key={role}
