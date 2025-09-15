@@ -6,7 +6,7 @@ import Rep from './pages/Rep.jsx';
 import OnBoarding from './pages/OnBoarding.jsx';
 import EventsCalendar from './pages/Events.jsx';
 import {Routes,Route} from 'react-router-dom'
-
+import UserManagement from './pages/UserManagement.jsx';
 function App() {
   return(
     <Routes>
@@ -17,6 +17,7 @@ function App() {
       <Route path='/events' element={<EventsCalendar/>} />
       <Route path='/attend' element={<Attendance/>} />
       <Route path='/onboarding' element={<OnBoarding/>} />
+      <Route path='/management' element={<UserManagement/>} />
     </Routes>
     );
 }
