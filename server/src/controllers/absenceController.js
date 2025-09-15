@@ -100,6 +100,46 @@ export const getAbsences = async (req, res) => {
   }
 };
 
+export const updateAbsenceStatusByIdAndUid = async (req, res) => {
+  try {
+    const { id, uid, newStatus } = req.body;
+
+    if (!id || !uid || !newStatus) {
+      return res.status(400).json({ error: "id, uid, and newStatus are required." });
+    }
+
+    const docRef = db.collection("absences").doc(id);
+    const doc = await docRef.get();
+
+    if (!doc.exists) {
+      return res.status(404).json({ error: "Absence not found." });
+    }
+
+    const data = doc.data();
+   
+   
+    if (data.uid !== uid) {
+      return res.status(403).json({ error: "You are not authorized to update this absence." });
+    }
+
+    // If status is already the same
+    if (data.status === newStatus) {
+      return res.status(200).json({ message: "Status is already up to date.", status: newStatus });
+    }
+
+    // Update the status
+    await docRef.update({ status: newStatus });
+
+    return res.status(200).json({
+      message: `Absence status updated from "${data.status}" to "${newStatus}".`,
+    });
+
+  } catch (error) {
+    console.error("Error updating absence status:", error);
+    return res.status(500).json({ error: "Failed to update absence status." });
+  }
+};
+
 
 
 

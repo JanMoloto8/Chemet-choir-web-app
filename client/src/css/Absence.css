@@ -494,3 +494,212 @@ body {
         width: calc(100% - 1rem);
     }
 }
+
+/* Admin Controls for Absence Management */
+.status-section {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.5rem;
+}
+
+.admin-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.status-select {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(139, 69, 19, 0.3);
+    border-radius: 8px;
+    padding: 0.4rem 0.8rem;
+    color: white;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    outline: none;
+    min-width: 100px;
+}
+
+.status-select:focus {
+    border-color: #8B4513;
+    box-shadow: 0 0 0 2px rgba(139, 69, 19, 0.2);
+}
+
+.status-select:hover:not(:disabled) {
+    background: rgba(0, 0, 0, 0.5);
+    border-color: #CD853F;
+}
+
+.status-select:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.status-select option {
+    background: #1a1a1a;
+    color: white;
+    padding: 0.5rem;
+}
+
+/* Status-specific select styling */
+.status-select option[value="pending"] {
+    color: #FFC107;
+}
+
+.status-select option[value="approved"] {
+    color: #4CAF50;
+}
+
+.status-select option[value="rejected"] {
+    color: #F44336;
+}
+
+.updating-indicator {
+    display: flex;
+    align-items: center;
+    color: #CD853F;
+    font-size: 0.9rem;
+    margin-left: 0.3rem;
+}
+
+.updating-indicator i {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Enhanced absence header for admin view */
+.absence-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    margin-bottom: 1rem;
+    gap: 1rem;
+}
+
+/* Admin notification badge */
+.admin-badge {
+    background: linear-gradient(45deg, #8B4513, #A0522D);
+    color: white;
+    font-size: 0.7rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 10px;
+    font-weight: 600;
+    margin-left: 0.5rem;
+    display: inline-block;
+}
+
+/* Enhanced absence item hover for admin */
+.absence-item:hover .status-select {
+    border-color: #CD853F;
+    box-shadow: 0 2px 8px rgba(139, 69, 19, 0.2);
+}
+
+/* Status change animation */
+.status-changed {
+    animation: statusChangeFlash 0.6s ease;
+}
+
+@keyframes statusChangeFlash {
+    0% { background: rgba(139, 69, 19, 0.1); }
+    50% { background: rgba(139, 69, 19, 0.3); }
+    100% { background: rgba(0, 0, 0, 0.2); }
+}
+
+/* Quick action buttons (optional enhancement) */
+.quick-actions {
+    display: flex;
+    gap: 0.3rem;
+    margin-top: 0.5rem;
+}
+
+.quick-action-btn {
+    background: none;
+    border: 1px solid rgba(139, 69, 19, 0.3);
+    color: rgba(255, 255, 255, 0.7);
+    padding: 0.3rem 0.6rem;
+    border-radius: 5px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.quick-action-btn:hover {
+    background: rgba(139, 69, 19, 0.2);
+    color: white;
+    border-color: #CD853F;
+}
+
+.quick-action-btn.approve {
+    border-color: rgba(76, 175, 80, 0.3);
+    color: rgba(76, 175, 80, 0.8);
+}
+
+.quick-action-btn.approve:hover {
+    background: rgba(76, 175, 80, 0.1);
+    color: #4CAF50;
+    border-color: #4CAF50;
+}
+
+.quick-action-btn.reject {
+    border-color: rgba(244, 67, 54, 0.3);
+    color: rgba(244, 67, 54, 0.8);
+}
+
+.quick-action-btn.reject:hover {
+    background: rgba(244, 67, 54, 0.1);
+    color: #F44336;
+    border-color: #F44336;
+}
+
+/* Mobile responsiveness for admin controls */
+@media (max-width: 768px) {
+    .status-section {
+        align-items: stretch;
+    }
+    
+    .admin-controls {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.3rem;
+    }
+    
+    .status-select {
+        width: 100%;
+        min-width: auto;
+    }
+    
+    .absence-header {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .quick-actions {
+        justify-content: stretch;
+    }
+    
+    .quick-action-btn {
+        flex: 1;
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .admin-controls {
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid rgba(139, 69, 19, 0.2);
+    }
+    
+    .status-select {
+        padding: 0.6rem;
+        font-size: 0.9rem;
+    }
+}

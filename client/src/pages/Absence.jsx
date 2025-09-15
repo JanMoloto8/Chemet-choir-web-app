@@ -1,4 +1,4 @@
-import React, {useEffect, useState,useContext  } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import '../css/Absence.css';
 import Nav from '../components/Nav';
 import { AuthContext } from "../context/AuthContext";
@@ -12,9 +12,8 @@ export default function Absence() {
         reason: '',
         file: null
     });
-    const [absences, setAbsences] = useState([
-
-    ]);
+    const [absences, setAbsences] = useState([]);
+    const [updatingStatus, setUpdatingStatus] = useState({});
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -35,52 +34,88 @@ export default function Absence() {
     const handleFileUploadClick = () => {
         document.getElementById('fileInput').click();
     };
-    const handleSubmit = async (e) => {
-    e.preventDefault();
 
-    const newAbsence = {
-        uid: user.uid, // Replace this with the actual user's UID (from context, auth, etc.)
-        title: formData.title,
-        date: new Date().toLocaleDateString('en-US', { 
-            year: 'numeric', 
-            month: 'short', 
-            day: 'numeric' 
-        }),
-        event: formData.event,
-        status: "pending",
-        reason: formData.reason,
-        proof: formData.file ? formData.file.name : null
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        const newAbsence = {
+            uid: user.uid,
+            title: formData.title,
+            date: new Date().toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'short', 
+                day: 'numeric' 
+            }),
+            event: formData.event,
+            status: "pending",
+            reason: formData.reason,
+            proof: formData.file ? formData.file.name : null
+        };
+
+        try {
+            const response = await fetch('https://chemet-server-eububufcehb4bjav.southafricanorth-01.azurewebsites.net/api/absences/submit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(newAbsence)
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error('Submission failed:', errorData);
+                return;
+            }
+
+            const result = await response.json();
+            console.log('Absence submitted:', result);
+
+            setAbsences(prev => [newAbsence, ...prev]);
+            setFormData({ title: '', event: '', reason: '', file: null });
+            setIsModalOpen(false);
+
+        } catch (err) {
+            console.error('Error submitting absence:', err);
+        }
     };
 
-    try {
-        const response = await fetch('https://chemet-server-eububufcehb4bjav.southafricanorth-01.azurewebsites.net/api/absences/submit', {
-            method: 'POST',
+    const handleStatusUpdate = async (absenceId, absenceUid, newStatus) => {
+        setUpdatingStatus(prev => ({ ...prev, [absenceId]: true }));
+
+        try {
+            const response = await fetch("https://chemet-server-eububufcehb4bjav.southafricanorth-01.azurewebsites.net/api/absences/update-status", {
+            method: "PUT",
             headers: {
-                'Content-Type': 'application/json'
+                "Content-Type": "application/json"
             },
-            body: JSON.stringify(newAbsence)
-        });
+            body: JSON.stringify({ 
+                id: absenceId,
+                uid: absenceUid,     
+                newStatus: newStatus  
+            })
+            });
 
-        if (!response.ok) {
-            const errorData = await response.json();
-            console.error('Submission failed:', errorData);
-            return;
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error('Status update failed:', errorData);
+                return;
+            }
+
+            // Update local state
+            setAbsences(prev => prev.map(absence => 
+                absence.id === absenceId || absence._id === absenceId
+                    ? { ...absence, status: newStatus }
+                    : absence
+            ));
+
+            alert(`Status updated to ${newStatus}`);
+
+        } catch (err) {
+            console.error('Error updating status:', err);
+        } finally {
+            setUpdatingStatus(prev => ({ ...prev, [absenceId]: false }));
         }
-
-        const result = await response.json();
-        console.log('Absence submitted:', result);
-
-        // Optional: Update UI
-        setAbsences(prev => [newAbsence, ...prev]);
-
-        // Reset form and close modal
-        setFormData({ title: '', event: '', reason: '', file: null });
-        setIsModalOpen(false);
-
-    } catch (err) {
-        console.error('Error submitting absence:', err);
-    }
-};
+    };
 
     const handleCancel = () => {
         setFormData({ title: '', event: '', reason: '', file: null });
@@ -95,19 +130,18 @@ export default function Absence() {
             default: return 'status-pending';
         }
     };
-    useEffect(() => {
 
+    useEffect(() => {
         const fetchAbsences = async () => {
             try {
                 let url;
 
-               if (user?.role === "admin") {
-                    // Admin fetches all absences from local server
+                if (user?.role === "admin") {
                     url = "https://chemet-server-eububufcehb4bjav.southafricanorth-01.azurewebsites.net/api/absences/";
                 } else {
-                    // Regular user fetches only their own absences
                     url = `https://chemet-server-eububufcehb4bjav.southafricanorth-01.azurewebsites.net/api/absences/mine?uid=${user.uid}`;
                 }
+                
                 const response = await fetch(url, {
                     method: 'GET',
                     headers: {
@@ -122,8 +156,8 @@ export default function Absence() {
                 }
 
                 const data = await response.json();
-                
                 setAbsences(data.absences); 
+                // console.log(data.absences);
             } catch (err) {
                 console.error('Error fetching absences:', err);
             }
@@ -132,8 +166,7 @@ export default function Absence() {
         if (user?.uid) {
             fetchAbsences();
         }
-    },[user]);
-
+    }, [user]);
 
     return (
         <>
@@ -157,12 +190,12 @@ export default function Absence() {
                 <section className="absence-history">
                     <h2 className="section-title">
                         <i className="fas fa-history"></i>
-                      {user?.role === "admin" ? "Absence History" : "Your Absence History"}
+                        {user?.role === "admin" ? "Absence History" : "Your Absence History"}
                     </h2>
 
                     <div className="absence-list">
-                        {absences.map((absence) => (
-                            <div key={absence.id} className="absence-item">
+                        {absences.map((absence, index) => (
+                            <div key={absence.id || absence._id || index} className="absence-item">
                                 <div className="absence-header">
                                     <div>
                                         <div className="absence-title">{absence.title}</div>
@@ -173,11 +206,32 @@ export default function Absence() {
                                             <div className="absence-user">
                                                 <i className="fas fa-user"></i>
                                                 Submitted by: {absence.createdBy || absence.createdBy.name || 'Unknown User'}
-                                        </div>
+                                            </div>
                                         )}
                                     </div>
-                                    <div className={`absence-status ${getStatusClass(absence.status)}`}>
-                                        {absence.status.charAt(0).toUpperCase() + absence.status.slice(1)}
+                                    <div className="status-section">
+                                        <div className={`absence-status ${getStatusClass(absence.status)}`}>
+                                            {absence.status.charAt(0).toUpperCase() + absence.status.slice(1)}
+                                        </div>
+                                        {user?.role === "admin" && (
+                                            <div className="admin-controls">
+                                                <select 
+                                                    className="status-select"
+                                                    value={absence.status}
+                                                    onChange={(e) => handleStatusUpdate(absence.id || absence._id,absence.uid, e.target.value)}
+                                                    disabled={updatingStatus[absence.id || absence._id]}
+                                                >
+                                                    <option value="pending">Pending</option>
+                                                    <option value="approved">Approved</option>
+                                                    <option value="rejected">Rejected</option>
+                                                </select>
+                                                {updatingStatus[absence.id || absence._id] && (
+                                                    <div className="updating-indicator">
+                                                        <i className="fas fa-spinner fa-spin"></i>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
                                 <div className="absence-reason">
@@ -205,7 +259,7 @@ export default function Absence() {
                             </button>
                         </div>
 
-                        <form onSubmit={handleSubmit}>
+                        <div>
                             <div className="form-group1">
                                 <label htmlFor="absenceTitle" className="form-label1">
                                     Absence Title <span className="required">*</span>
@@ -364,12 +418,12 @@ export default function Absence() {
                                 <button type="button" className="btn btn-secondary" onClick={handleCancel}>
                                     Cancel
                                 </button>
-                                <button type="submit" className="btn btn-primary">
+                                <button type="button" className="btn btn-primary" onClick={handleSubmit}>
                                     <i className="fas fa-paper-plane"></i>
                                     Submit Report
                                 </button>
                             </div>
-                        </form>
+                        </div>
                     </div>
                 </div>
             )}
