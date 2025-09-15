@@ -112,7 +112,40 @@ export default function Rep() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Reformatting the song data to match the required structure
+        let sheetMusicUrl = "";
+
+        // If there's a sheet music file, upload it to Cloudinary first
+        if (newSong.sheetMusic) {
+            const formData = new FormData();
+            formData.append('file', newSong.sheetMusic);
+            formData.append('upload_preset', 'unsigned_preset');  // Your Cloudinary unsigned preset name
+            formData.append('resource_type', 'raw'); // ✅ this is key!
+            try {
+                const cloudinaryResponse = await fetch(
+                `https://api.cloudinary.com/v1_1/di4nj7zmo/raw/upload`, // ✅ fix here
+                {
+                    method: 'POST',
+                    body: formData
+                }
+                );
+
+                const cloudinaryData = await cloudinaryResponse.json();
+
+                if (cloudinaryResponse.ok) {
+                    sheetMusicUrl = cloudinaryData.secure_url;
+                    console.log(sheetMusicUrl)
+                } else {
+                    alert('Failed to upload sheet music to Cloudinary');
+                    return;
+                }
+            } catch (err) {
+                console.error('Cloudinary upload error:', err);
+                alert('An error occurred while uploading the sheet music.');
+                return;
+            }
+        }
+
+        // Build the song data object, including sheetMusicUrl if exists
         const newSongData = {
             title: newSong.title,
             songwriter: newSong.songwriter || "Unknown Artist",
@@ -123,16 +156,17 @@ export default function Rep() {
                 youtube: newSong.videoLink.trim() ? newSong.videoLink : "",
                 tiktok: newSong.videoLink.trim() ? newSong.videoLink : "",
             },
-            status: "progress", // Assume the status is "complete" by default
+            sheetMusicUrl,  // <-- Add this field here
+            status: "progress",
         };
 
         try {
-            // Sending the formatted data to the backend API
+            // Send to your backend API
             const response = await fetch("https://chemet-server-eububufcehb4bjav.southafricanorth-01.azurewebsites.net/api/repertoire/add", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`, // Assuming you have a token for authentication
+                    Authorization: `Bearer ${token}`,
                 },
                 body: JSON.stringify(newSongData),
             });
@@ -140,10 +174,8 @@ export default function Rep() {
             const result = await response.json();
 
             if (response.ok) {
-                // Update local state to include the new song
                 setSongs(prev => [...prev, newSongData]);
 
-                // Reset the form
                 setNewSong({
                     title: '',
                     songwriter: '',
@@ -186,31 +218,34 @@ export default function Rep() {
         });
     };
 
-const handlePlay = (songData) => {
-    if (songData.videoLink.includes('tiktok.com')) {
-        window.open(songData.videoLink, '_blank');
-    } else if (songData.videoLink) {
-        setCurrentVideoLink(songData.videoLink);
-    } else {
-        alert('No video link available for this song');
-    }
-};
-
-    const handleDownload = (songData) => {
-        if (songData.sheetMusicFile) {
-            const url = URL.createObjectURL(songData.sheetMusicFile);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = `${songData.title}_sheet_music.pdf`;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            URL.revokeObjectURL(url);
+    const handlePlay = (songData) => {
+        if (songData.videoLink.includes('tiktok.com')) {
+            window.open(songData.videoLink, '_blank');
+        } else if (songData.videoLink) {
+            setCurrentVideoLink(songData.videoLink);
         } else {
-            alert('No sheet music file available for download');
+            alert('No video link available for this song');
         }
     };
-        useEffect(() => {
+
+    const handleDownload = (songData) => {
+        // try {
+        //     const url = songData.sheetMusicUrl || 
+        //         "https://res.cloudinary.com/di4nj7zmo/image/upload/v1757855411/greuthceuo6nk7fuiuvj.pdf";
+            
+        //     const link = document.createElement('a');
+        //     link.href = url;
+        //     link.download = `${songData.title || "unknown"}_sheet_music.pdf`;
+        //     document.body.appendChild(link);
+        //     link.click();
+        //     document.body.removeChild(link);
+        // } catch (e) {
+        //     console.error("Download failed:", e);
+        // }
+        alert("Not yet functional..Relaxa Neh!")
+    };
+
+            useEffect(() => {
         const fetchSongs = async () => {
             try {
                 const res = await fetch("https://chemet-server-eububufcehb4bjav.southafricanorth-01.azurewebsites.net/api/repertoire/list");
@@ -229,7 +264,7 @@ const handlePlay = (songData) => {
                         tags: song.tags || [],
                         category: song.category || [],
                         hasVideo: !!(song.link?.youtube || song.link?.tiktok),
-                        hasSheetMusic: false,
+                        hasSheetMusic: true,
                         videoLink: song.link?.youtube || song.link?.tiktok || ""
                     }));
 
@@ -500,28 +535,26 @@ const handlePlay = (songData) => {
 
                 {/* === Embedded Video Modal === */}
                 {currentVideoLink && (
-                    <div className="modal-overlay" onClick={() => setCurrentVideoLink(null)}>
-                        <div className="modal-box" onClick={(e) => e.stopPropagation()}>
-                            <div className="modal-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                                <h2>Now Playing</h2>
-                                <button className="close-btn" onClick={() => setCurrentVideoLink(null)}>
-                                    <X className="rep-icon" />
-                                </button>
-                            </div>
-
-                            <div className="video-wrapper">
-                                <iframe
-                                    width="100%"
-                                    height="315"
-                                    src={getEmbeddedVideoURL(currentVideoLink)}
-                                    title="Video Player"
-                                    frameBorder="0"
-                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                    allowFullScreen
-                                />
-                            </div>
-                        </div>
+                <div className="modal-overlay" onClick={() => setCurrentVideoLink(null)}>
+                    <div className="video-modal-content" onClick={(e) => e.stopPropagation()}>
+                    <div className="video-modal-header">
+                        <h2 className="video-modal-title">Now Playing</h2>
+                        <button className="close-btn" onClick={() => setCurrentVideoLink(null)}>
+                        <X className="rep-icon" />
+                        </button>
                     </div>
+
+                    <div className="video-wrapper">
+                        <iframe
+                        src={getEmbeddedVideoURL(currentVideoLink)}
+                        title="Video Player"
+                        className="video-iframe"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                        />
+                    </div>
+                    </div>
+                </div>
                 )}
             </div>
         </>

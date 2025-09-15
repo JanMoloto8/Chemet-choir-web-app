@@ -103,7 +103,7 @@ export default function Absence() {
 
                if (user?.role === "admin") {
                     // Admin fetches all absences from local server
-                    url = "http://localhost:5000/api/absences/";
+                    url = "https://chemet-server-eububufcehb4bjav.southafricanorth-01.azurewebsites.net/api/absences/";
                 } else {
                     // Regular user fetches only their own absences
                     url = `https://chemet-server-eububufcehb4bjav.southafricanorth-01.azurewebsites.net/api/absences/mine?uid=${user.uid}`;
@@ -114,7 +114,7 @@ export default function Absence() {
                         'Content-Type': 'application/json',
                     },
                 });
-
+                
                 if (!response.ok) {
                     const errorData = await response.json();
                     console.error('Failed to fetch absences:', errorData);
@@ -122,6 +122,7 @@ export default function Absence() {
                 }
 
                 const data = await response.json();
+                
                 setAbsences(data.absences); 
             } catch (err) {
                 console.error('Error fetching absences:', err);
@@ -156,7 +157,7 @@ export default function Absence() {
                 <section className="absence-history">
                     <h2 className="section-title">
                         <i className="fas fa-history"></i>
-                        Your Absence History
+                      {user?.role === "admin" ? "Absence History" : "Your Absence History"}
                     </h2>
 
                     <div className="absence-list">
@@ -168,6 +169,12 @@ export default function Absence() {
                                         <div className="absence-date">
                                             Reported: {absence.date} Event: {absence.event}
                                         </div>
+                                        {user?.role === "admin" && absence.createdBy && (
+                                            <div className="absence-user">
+                                                <i className="fas fa-user"></i>
+                                                Submitted by: {absence.createdBy || absence.createdBy.name || 'Unknown User'}
+                                        </div>
+                                        )}
                                     </div>
                                     <div className={`absence-status ${getStatusClass(absence.status)}`}>
                                         {absence.status.charAt(0).toUpperCase() + absence.status.slice(1)}

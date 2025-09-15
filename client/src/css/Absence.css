@@ -134,7 +134,20 @@ body {
     font-size: 0.9rem;
     font-weight: 500;
 }
+.absence-user {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: rgba(34, 180, 5, 0.7);
+    font-size: 0.99rem;
+    font-weight: 900;
+    margin-top: 0.2rem;
+}
 
+.absence-user i {
+    color: #CD853F;
+    font-size: 0.8rem;
+}
 .absence-status {
     padding: 0.3rem 0.8rem;
     border-radius: 15px;

@@ -3,7 +3,7 @@ import { db } from "../config/firebaseAdmin.js"; // your Firestore config
 // Submit Absence Document
 export const submitAbsence = async (req, res) => {
   try {
-    const { uid, title, date, event, status, reason, proof } = req.body;
+    const { uid, title, date, event, status, reason, proof,createdBy } = req.body;
 
     // Validate input
     if (!uid || !title || !date || !event || !status || !reason) {
@@ -19,7 +19,9 @@ export const submitAbsence = async (req, res) => {
       status,
       reason,
       proof,
+      createdBy,
       createdAt: new Date(),
+     
     });
     console.log(req.body);
     res.status(201).json({ message: "Absence submitted successfully", docId: docRef.uid });

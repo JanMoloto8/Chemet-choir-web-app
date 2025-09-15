@@ -477,3 +477,66 @@
   border-radius: 12px;
   white-space: nowrap;
 }
+
+
+.video-modal-content {
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.9), rgba(34, 34, 34, 0.95));
+  backdrop-filter: blur(15px);
+  border-radius: 20px;
+  padding: 1rem;
+  max-width: 90vw;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: modalSlideIn 0.3s ease;
+  border: 1px solid rgba(205, 133, 63, 0.3);
+}
+
+@media (min-width: 768px) {
+  .video-modal-content {
+    width: 900px;
+    padding: 1.5rem 2rem;
+  }
+}
+
+@media (min-width: 1600px) {
+  .video-modal-content {
+    width: 1300px;
+    padding: 1.5rem 2rem;
+  }
+}
+.video-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(205, 133, 63, 0.3);
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+}
+
+.video-modal-title {
+  color: white;
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.video-wrapper {
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+  height: 0;
+  overflow: hidden;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.video-iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+  border-radius: 12px;
+}
