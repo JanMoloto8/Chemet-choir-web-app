@@ -108,7 +108,7 @@ export default function Absence() {
                     : absence
             ));
 
-            alert(`Status updated to ${newStatus}`);
+            // alert(`Status updated to ${newStatus}`);
 
         } catch (err) {
             console.error('Error updating status:', err);
@@ -157,7 +157,7 @@ export default function Absence() {
 
                 const data = await response.json();
                 setAbsences(data.absences); 
-                // console.log(data.absences);
+
             } catch (err) {
                 console.error('Error fetching absences:', err);
             }
