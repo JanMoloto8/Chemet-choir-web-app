@@ -49,7 +49,8 @@ export default function Absence() {
             event: formData.event,
             status: "pending",
             reason: formData.reason,
-            proof: formData.file ? formData.file.name : null
+            proof: formData.file ? formData.file.name : null,
+            createdBy:user.username
         };
 
         try {
@@ -101,12 +102,7 @@ export default function Absence() {
                 return;
             }
 
-            // Update local state
-            setAbsences(prev => prev.map(absence => 
-                absence.id === absenceId || absence._id === absenceId
-                    ? { ...absence, status: newStatus }
-                    : absence
-            ));
+            setAbsences(prev => prev.map(absence => absence.id === absenceId || absence._id === absenceId ? { ...absence, status: newStatus } : absence));
 
             // alert(`Status updated to ${newStatus}`);
 
