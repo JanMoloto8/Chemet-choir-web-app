@@ -229,20 +229,21 @@ export default function Rep() {
     };
 
     const handleDownload = (songData) => {
-        // try {
-        //     const url = songData.sheetMusicUrl || 
-        //         "https://res.cloudinary.com/di4nj7zmo/image/upload/v1757855411/greuthceuo6nk7fuiuvj.pdf";
+        try {
+            console.log(songData)
+            const url = songData.sheetMusicUrl||"https://res.cloudinary.com/di4nj7zmo/raw/upload/v1758040722/fml41kbnxaconahusltp.pdf"
             
-        //     const link = document.createElement('a');
-        //     link.href = url;
-        //     link.download = `${songData.title || "unknown"}_sheet_music.pdf`;
-        //     document.body.appendChild(link);
-        //     link.click();
-        //     document.body.removeChild(link);
-        // } catch (e) {
-        //     console.error("Download failed:", e);
-        // }
-        alert("Not yet functional..Relaxa Neh!")
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `${songData.title || "unknown"}_sheet_music.pdf`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        } catch (e) {
+            console.error("Download failed:", e);
+            alert("Not yet functional..Relaxa Neh!")
+        }
+        
     };
 
             useEffect(() => {
@@ -265,10 +266,12 @@ export default function Rep() {
                         category: song.category || [],
                         hasVideo: !!(song.link?.youtube || song.link?.tiktok),
                         hasSheetMusic: true,
-                        videoLink: song.link?.youtube || song.link?.tiktok || ""
+                        videoLink: song.link?.youtube || song.link?.tiktok || "",
+                        sheetMusicUrl: song.sheetMusicUrl || null,
                     }));
-
+                    console.log(formatted)
                     setSongs(formatted);
+                   
                 } else {
                     alert("Failed to fetch songs.");
                 }

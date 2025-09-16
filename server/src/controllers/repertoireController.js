@@ -11,10 +11,11 @@ export const addSong = async (req, res) => {
       key,
       category,
       link,
-      status
+      status,
+      sheetMusicUrl,
     } = req.body;
 
-    if (!title || !songwriter || !tempo || !key || !category || !link || !status) {
+    if (!title || !songwriter || !tempo || !key || !category || !link || !status || !sheetMusicUrl) {
       return res.status(400).json({
         success: false,
         message: 'All fields are required',
@@ -30,6 +31,7 @@ export const addSong = async (req, res) => {
       link,     // object with youtube/tiktok links
       status,
       createdAt: new Date(),
+      sheetMusicUrl,
     };
 
     const docRef = await db.collection('songs').add(newSong);
