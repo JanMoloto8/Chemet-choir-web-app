@@ -182,8 +182,14 @@ body {
     gap: 0.5rem;
     color: #CD853F;
     font-size: 0.9rem;
+    cursor: pointer; /* show hand cursor */
+    transition: color 0.2s ease, text-decoration 0.2s ease;
 }
 
+.absence-proof:hover {
+    color: #A0522D; /* slightly darker shade */
+    text-decoration: underline; /* optional: underline on hover */
+}
 /* Modal */
 .modal-overlay1 {
     position: fixed;

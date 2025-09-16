@@ -35,8 +35,62 @@ export default function Absence() {
         document.getElementById('fileInput').click();
     };
 
+const handleFileDownload = (url) => {
+    console.log(url)
+    if (!url) {
+        console.error("No file URL provided");
+        return;
+    }
+
+    try {
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", "proof"); // Suggests a download filename
+           link.download = `proof.pdf`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    } catch (error) {
+        console.error("Download failed:", error);
+    }
+};
+
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        let proofUrl= "";
+
+        // If there's a sheet music file, upload it to Cloudinary first
+        if (formData.file) {
+            const form = new FormData();
+            form.append('file', formData.file);
+            form.append('upload_preset', 'unsigned_preset');  // Your Cloudinary unsigned preset name
+            form.append('resource_type', 'raw'); // ✅ this is key!
+            try {
+                const cloudinaryResponse = await fetch(
+                `https://api.cloudinary.com/v1_1/di4nj7zmo/raw/upload`, // ✅ fix here
+                {
+                    method: 'POST',
+                    body: form
+                }
+                );
+
+                const cloudinaryData = await cloudinaryResponse.json();
+
+                if (cloudinaryResponse.ok) {
+                    proofUrl = cloudinaryData.secure_url;
+                    console.log(proofUrl)
+                } else {
+                    alert('Failed to upload sheet music to Cloudinary');
+                    return;
+                }
+            } catch (err) {
+                console.error('Cloudinary upload error:', err);
+                alert('An error occurred while uploading the sheet music.');
+                return;
+            }
+        }
 
         const newAbsence = {
             uid: user.uid,
@@ -49,7 +103,7 @@ export default function Absence() {
             event: formData.event,
             status: "pending",
             reason: formData.reason,
-            proof: formData.file ? formData.file.name : null,
+            proof: formData.file ? proofUrl : null,
             createdBy:user.username
         };
 
@@ -234,9 +288,9 @@ export default function Absence() {
                                     {absence.reason}
                                 </div>
                                 {absence.proof && (
-                                    <div className="absence-proof">
+                                    <div className="absence-proof" onClick={() => handleFileDownload(absence.proof)}>
                                         <i className="fas fa-paperclip"></i>
-                                        {absence.proof} attached
+                                         Download proof
                                     </div>
                                 )}
                             </div>
